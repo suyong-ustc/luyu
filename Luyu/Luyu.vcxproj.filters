@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Translation Files">
+      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
+      <Extensions>ts</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Setting">
+      <UniqueIdentifier>{49aa2573-a30a-476d-bbf0-408b9a44976b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Setting">
+      <UniqueIdentifier>{9d88ac65-0793-45c3-844c-83c0e8403536}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interpolation">
+      <UniqueIdentifier>{e7c82963-355d-4083-b2cb-6d15e01f94d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interpolation">
+      <UniqueIdentifier>{4e8a7572-320d-4bf7-b973-5ef0d5b2fb05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DIC">
+      <UniqueIdentifier>{fcacacae-4523-43e2-9b0c-7d4798dedb7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DIC">
+      <UniqueIdentifier>{a6a93908-1822-4902-a22f-0bb179497e1d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DICConvergence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DICDeformation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DICPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DICRegisterFullFieldDeformation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DICParameters.cpp">
+      <Filter>Source Files\Setting</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolation\BicubicMOMSInterpolator.cc">
+      <Filter>Source Files\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolation\BiquinticBSplineInterpolatror.cc">
+      <Filter>Source Files\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolation\BisepticBSplineInterpolator.cc">
+      <Filter>Source Files\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolation\Interpolator.cc">
+      <Filter>Source Files\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="FAGN1.cpp">
+      <Filter>Source Files\DIC</Filter>
+    </ClCompile>
+    <ClCompile Include="FAGN2.cpp">
+      <Filter>Source Files\DIC</Filter>
+    </ClCompile>
+    <ClCompile Include="GaussNewtonOptimization.cpp">
+      <Filter>Source Files\DIC</Filter>
+    </ClCompile>
+    <ClCompile Include="DICShapeFunction.cpp">
+      <Filter>Source Files\DIC</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DICConvergence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DICDeformation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DICPattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DICRegisterFullFieldDeformation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DICParameters.h">
+      <Filter>Header Files\Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="DICTypes.h">
+      <Filter>Header Files\Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="interpolation\BicubicMOMSInterpolator.h">
+      <Filter>Header Files\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="interpolation\BiquinticBSplineInterpolatror.h">
+      <Filter>Header Files\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="interpolation\BisepticBSplineInterpolator.h">
+      <Filter>Header Files\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="interpolation\Interpolator.h">
+      <Filter>Header Files\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="FAGN1.h">
+      <Filter>Header Files\DIC</Filter>
+    </ClInclude>
+    <ClInclude Include="FAGN2.h">
+      <Filter>Header Files\DIC</Filter>
+    </ClInclude>
+    <ClInclude Include="GaussNewtonOptimization.h">
+      <Filter>Header Files\DIC</Filter>
+    </ClInclude>
+    <ClInclude Include="DICShapeFunction.h">
+      <Filter>Header Files\DIC</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
