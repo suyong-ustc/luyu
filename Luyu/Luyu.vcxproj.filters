@@ -21,12 +21,6 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
-    <Filter Include="Header Files\Setting">
-      <UniqueIdentifier>{49aa2573-a30a-476d-bbf0-408b9a44976b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Setting">
-      <UniqueIdentifier>{9d88ac65-0793-45c3-844c-83c0e8403536}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Interpolation">
       <UniqueIdentifier>{e7c82963-355d-4083-b2cb-6d15e01f94d5}</UniqueIdentifier>
     </Filter>
@@ -44,71 +38,29 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DICConvergence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DICDeformation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DICPattern.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DICRegisterFullFieldDeformation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Util.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DICParameters.cpp">
-      <Filter>Source Files\Setting</Filter>
-    </ClCompile>
-    <ClCompile Include="interpolation\BicubicMOMSInterpolator.cc">
+    <ClCompile Include="interpolation\BicubicMOMSInterpolator.cpp">
       <Filter>Source Files\Interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="interpolation\BiquinticBSplineInterpolatror.cc">
+    <ClCompile Include="interpolation\BiquinticBSplineInterpolatror.cpp">
       <Filter>Source Files\Interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="interpolation\BisepticBSplineInterpolator.cc">
+    <ClCompile Include="interpolation\BisepticBSplineInterpolator.cpp">
       <Filter>Source Files\Interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="interpolation\Interpolator.cc">
+    <ClCompile Include="interpolation\Interpolator.cpp">
       <Filter>Source Files\Interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="FAGN1.cpp">
+    <ClCompile Include="DIC\DICAlgorithm.cpp">
       <Filter>Source Files\DIC</Filter>
     </ClCompile>
-    <ClCompile Include="FAGN2.cpp">
+    <ClCompile Include="DIC\DICParameters.cpp">
       <Filter>Source Files\DIC</Filter>
     </ClCompile>
-    <ClCompile Include="GaussNewtonOptimization.cpp">
-      <Filter>Source Files\DIC</Filter>
-    </ClCompile>
-    <ClCompile Include="DICShapeFunction.cpp">
+    <ClCompile Include="DIC\DICOutput.cpp">
       <Filter>Source Files\DIC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DICConvergence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DICDeformation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DICPattern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DICRegisterFullFieldDeformation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DICParameters.h">
-      <Filter>Header Files\Setting</Filter>
-    </ClInclude>
-    <ClInclude Include="DICTypes.h">
-      <Filter>Header Files\Setting</Filter>
-    </ClInclude>
     <ClInclude Include="interpolation\BicubicMOMSInterpolator.h">
       <Filter>Header Files\Interpolation</Filter>
     </ClInclude>
@@ -121,16 +73,13 @@
     <ClInclude Include="interpolation\Interpolator.h">
       <Filter>Header Files\Interpolation</Filter>
     </ClInclude>
-    <ClInclude Include="FAGN1.h">
+    <ClInclude Include="DIC\DICAlgorithm.h">
       <Filter>Header Files\DIC</Filter>
     </ClInclude>
-    <ClInclude Include="FAGN2.h">
+    <ClInclude Include="DIC\DICParameters.h">
       <Filter>Header Files\DIC</Filter>
     </ClInclude>
-    <ClInclude Include="GaussNewtonOptimization.h">
-      <Filter>Header Files\DIC</Filter>
-    </ClInclude>
-    <ClInclude Include="DICShapeFunction.h">
+    <ClInclude Include="DIC\DICOutput.h">
       <Filter>Header Files\DIC</Filter>
     </ClInclude>
   </ItemGroup>

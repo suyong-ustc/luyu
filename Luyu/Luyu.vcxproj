@@ -94,38 +94,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DICConvergence.cpp" />
-    <ClCompile Include="DICDeformation.cpp" />
-    <ClCompile Include="DICParameters.cpp" />
-    <ClCompile Include="DICPattern.cpp" />
-    <ClCompile Include="DICRegisterFullFieldDeformation.cpp" />
-    <ClCompile Include="DICShapeFunction.cpp" />
-    <ClCompile Include="FAGN1.cpp" />
-    <ClCompile Include="FAGN2.cpp" />
-    <ClCompile Include="GaussNewtonOptimization.cpp" />
-    <ClCompile Include="interpolation\BicubicMOMSInterpolator.cc" />
-    <ClCompile Include="interpolation\BiquinticBSplineInterpolatror.cc" />
-    <ClCompile Include="interpolation\BisepticBSplineInterpolator.cc" />
-    <ClCompile Include="interpolation\Interpolator.cc" />
+    <ClCompile Include="DIC\DICAlgorithm.cpp" />
+    <ClCompile Include="DIC\DICOutput.cpp" />
+    <ClCompile Include="DIC\DICParameters.cpp" />
+    <ClCompile Include="interpolation\BicubicMOMSInterpolator.cpp" />
+    <ClCompile Include="interpolation\BiquinticBSplineInterpolatror.cpp" />
+    <ClCompile Include="interpolation\BisepticBSplineInterpolator.cpp" />
+    <ClCompile Include="interpolation\Interpolator.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DICConvergence.h" />
-    <ClInclude Include="DICDeformation.h" />
-    <ClInclude Include="DICParameters.h" />
-    <ClInclude Include="DICPattern.h" />
-    <ClInclude Include="DICRegisterFullFieldDeformation.h" />
-    <ClInclude Include="DICShapeFunction.h" />
-    <ClInclude Include="DICTypes.h" />
-    <ClInclude Include="FAGN1.h" />
-    <ClInclude Include="FAGN2.h" />
-    <ClInclude Include="GaussNewtonOptimization.h" />
+    <ClInclude Include="DIC\DICAlgorithm.h" />
+    <ClInclude Include="DIC\DICOutput.h" />
+    <ClInclude Include="DIC\DICParameters.h" />
     <ClInclude Include="interpolation\BicubicMOMSInterpolator.h" />
     <ClInclude Include="interpolation\BiquinticBSplineInterpolatror.h" />
     <ClInclude Include="interpolation\BisepticBSplineInterpolator.h" />
     <ClInclude Include="interpolation\Interpolator.h" />
-    <ClInclude Include="Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
