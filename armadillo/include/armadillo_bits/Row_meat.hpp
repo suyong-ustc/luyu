@@ -311,9 +311,10 @@ Row<eT>::Row(const std::vector<eT>& x)
   {
   arma_extra_debug_sigprint_this(this);
   
-  const uword N = uword(x.size());
-  
-  if(N > 0)  { arrayops::copy( Mat<eT>::memptr(), &(x[0]), N ); }
+  if(x.size() > 0)
+    {
+    arrayops::copy( Mat<eT>::memptr(), &(x[0]), uword(x.size()) );
+    }
   }
   
   
@@ -326,11 +327,12 @@ Row<eT>::operator=(const std::vector<eT>& x)
   {
   arma_extra_debug_sigprint();
   
-  const uword N = uword(x.size());
+  Mat<eT>::init_warm(1, uword(x.size()));
   
-  Mat<eT>::init_warm(1, N);
-  
-  if(N > 0)  { arrayops::copy( Mat<eT>::memptr(), &(x[0]), N ); }
+  if(x.size() > 0)
+    {
+    arrayops::copy( Mat<eT>::memptr(), &(x[0]), uword(x.size()) );
+    }
   
   return *this;
   }
@@ -340,13 +342,11 @@ Row<eT>::operator=(const std::vector<eT>& x)
 template<typename eT>
 inline
 Row<eT>::Row(const std::initializer_list<eT>& list)
-  : Mat<eT>(arma_vec_indicator(), 1, uword(list.size()), 2)
+  : Mat<eT>(arma_vec_indicator(), 2)
   {
-  arma_extra_debug_sigprint_this(this);
+  arma_extra_debug_sigprint();
   
-  const uword N = uword(list.size());
-  
-  if(N > 0)  { arrayops::copy( Mat<eT>::memptr(), list.begin(), N ); }
+  (*this).operator=(list);
   }
 
 
@@ -358,11 +358,14 @@ Row<eT>::operator=(const std::initializer_list<eT>& list)
   {
   arma_extra_debug_sigprint();
   
-  const uword N = uword(list.size());
+  Mat<eT> tmp(list);
   
-  Mat<eT>::init_warm(1, N);
+  arma_debug_check( ((tmp.n_elem > 0) && (tmp.is_vec() == false)), "Mat::init(): requested size is not compatible with row vector layout" );
   
-  if(N > 0)  { arrayops::copy( Mat<eT>::memptr(), list.begin(), N ); }
+  access::rw(tmp.n_rows) = 1;
+  access::rw(tmp.n_cols) = tmp.n_elem;
+  
+  (*this).steal_mem(tmp);
   
   return *this;
   }
@@ -419,6 +422,14 @@ Row<eT>::operator=(Row<eT>&& X)
   arma_extra_debug_sigprint(arma_str::format("this = %x   X = %x") % this % &X);
   
   (*this).steal_mem(X, true);
+  
+  if( (X.mem_state == 0) && (X.n_alloc <= arma_config::mat_prealloc) && (this != &X) )
+    {
+    access::rw(X.n_rows) = 1;
+    access::rw(X.n_cols) = 0;
+    access::rw(X.n_elem) = 0;
+    access::rw(X.mem)    = nullptr;
+    }
   
   return *this;
   }

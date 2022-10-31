@@ -44,10 +44,6 @@ bool FourthOrderPseudoInverseMatrix(const arma::mat& gx, const arma::mat& gy, co
 bool FifthOrderPseudoInverseMatrix(const arma::mat& gx, const arma::mat& gy, const arma::mat& x, const arma::mat& y, arma::mat& pseudo);
 
 
-
-bool isConverge(const arma::vec& dp);
-
-
 /*******************************************************************************************************************/
 /**********************************            计算全场变形             ********************************************/
 /******************************************************************************************************************/
@@ -55,9 +51,18 @@ bool isConverge(const arma::vec& dp);
 
 DICOutput* RigsterFullFieldDisplacement(const arma::mat& refer_image, const arma::mat& deform_image, const DICParameters& dic_parameters);
 
-bool EstimateInitialDisplacement(const arma::mat& refer_image, const arma::mat& deform_image, const arma::mat& x, const arma::mat& y, arma::mat& u, arma::mat& v);
+bool EstimateInitialDisplacement(const arma::mat& refer_image, const arma::mat& deform_image, const DICParameters& dic_parameters, DICOutput* dic_output);
 
-bool RegisterSubpixelDisplacement(const arma::mat& refer_image, const arma::mat& deform_image, const arma::mat& x, const arma::mat& y, const DICParameters& dic_parameters, const arma::mat& u, const arma::mat& v, DICOutput* dic_output);
+bool RegisterSubpixelDisplacement(const arma::mat& refer_image, const arma::mat& deform_image, const DICParameters& dic_parameters, DICOutput* dic_output);
+
+
+Interpolator* ConstructInterpolator(const arma::mat& image, const int& n);
+
+void SubsetPointsRelativeCoordinate(const int& m, arma::mat& dx, arma::mat& dy);
+
+arma::mat SubsetIntensities(const arma::mat& image, const int& x0, const int& y0, const int& m);
+
+bool isConverge(const arma::vec& dp, const double& threshold);
 
 
 /*******************************************************************************************************************/

@@ -65,12 +65,11 @@ subview_each_common<parent,mode>::get_mat_ref() const
 
 
 template<typename parent, unsigned int mode>
-template<typename eT2>
 inline
 void
-subview_each_common<parent,mode>::check_size(const Mat<eT2>& A) const
+subview_each_common<parent,mode>::check_size(const Mat<typename parent::elem_type>& A) const
   {
-  if(arma_config::debug)
+  if(arma_config::debug == true)
     {
     if(mode == 0)
       {
@@ -92,11 +91,10 @@ subview_each_common<parent,mode>::check_size(const Mat<eT2>& A) const
 
 
 template<typename parent, unsigned int mode>
-template<typename eT2>
 arma_cold
 inline
 const std::string
-subview_each_common<parent,mode>::incompat_size_string(const Mat<eT2>& A) const
+subview_each_common<parent,mode>::incompat_size_string(const Mat<typename parent::elem_type>& A) const
   {
   std::ostringstream tmp;
   
@@ -194,7 +192,7 @@ subview_each1<parent,mode>::operator+= (const Base<eT,T1>& in)
   const eT*   A_mem    = A.memptr();
   const uword p_n_rows = p.n_rows;
   const uword p_n_cols = p.n_cols;
-  
+    
   if(mode == 0) // each column
     {
     for(uword i=0; i < p_n_cols; ++i)
@@ -231,7 +229,7 @@ subview_each1<parent,mode>::operator-= (const Base<eT,T1>& in)
   const eT*   A_mem    = A.memptr();
   const uword p_n_rows = p.n_rows;
   const uword p_n_cols = p.n_cols;
-  
+    
   if(mode == 0) // each column
     {
     for(uword i=0; i < p_n_cols; ++i)

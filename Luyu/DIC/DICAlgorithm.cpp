@@ -415,8 +415,11 @@ bool ZeroOrderPseudoInverseMatrix(const mat& gx, const mat& gy, const mat& x, co
 	jacobian.col(0) = vectorise(gx);
 	jacobian.col(1) = vectorise(gy);
 
+	// 海森矩阵
+	const mat hessian = jacobian.t() * jacobian;
+
 	// 伪逆矩阵
-	pseudo = inv_sympd(jacobian.t() * jacobian) * jacobian.t();
+	pseudo = inv_sympd(hessian) * jacobian.t();
 
 	return true;
 }
@@ -436,8 +439,11 @@ bool FirstOrderPseudoInverseMatrix(const mat& gx, const mat& gy, const mat& x, c
 	jacobian.col(4) = vectorise(gy % x);
 	jacobian.col(5) = vectorise(gy % y);
 
+	// 海森矩阵
+	const mat hessian = jacobian.t() * jacobian;
+
 	// 伪逆矩阵
-	pseudo = inv_sympd(jacobian.t() * jacobian) * jacobian.t();
+	pseudo = inv_sympd(hessian) * jacobian.t();
 
 	return true;
 }
@@ -464,8 +470,11 @@ bool SecondOrderPseudoInverseMatrix(const mat& gx, const mat& gy, const mat& x, 
 	jacobian.col(10) = vectorise(gy % x % y);
 	jacobian.col(11) = vectorise(gy % y % y);
 
+	// 海森矩阵
+	const mat hessian = jacobian.t() * jacobian;
+
 	// 伪逆矩阵
-	pseudo = inv_sympd(jacobian.t() * jacobian) * jacobian.t();
+	pseudo = inv_sympd(hessian) * jacobian.t();
 
 	return true;
 }
@@ -501,8 +510,11 @@ bool ThirdOrderPseudoInverseMatrix(const mat& gx, const mat& gy, const mat& x, c
 	jacobian.col(18) = vectorise(gy % x % y % y);
 	jacobian.col(19) = vectorise(gy % y % y % y);
 
+	// 海森矩阵
+	const mat hessian = jacobian.t() * jacobian;
+
 	// 伪逆矩阵
-	pseudo = inv_sympd(jacobian.t() * jacobian) * jacobian.t();
+	pseudo = inv_sympd(hessian) * jacobian.t();
 
 	return true;
 }
@@ -549,8 +561,11 @@ bool FourthOrderPseudoInverseMatrix(const mat& gx, const mat& gy, const mat& x, 
 	jacobian.col(28) = vectorise(gy % x % y % y % y);
 	jacobian.col(29) = vectorise(gy % y % y % y % y);
 
+	// 海森矩阵
+	const mat hessian = jacobian.t() * jacobian;
+
 	// 伪逆矩阵
-	pseudo = inv_sympd(jacobian.t() * jacobian) * jacobian.t();
+	pseudo = inv_sympd(hessian) * jacobian.t();
 
 	return true;
 }
@@ -610,13 +625,14 @@ bool FifthOrderPseudoInverseMatrix(const mat& gx, const mat& gy, const mat& x, c
 	jacobian.col(40) = vectorise(gy % x % y % y % y % y);
 	jacobian.col(41) = vectorise(gy % y % y % y % y % y);
 
+	// 海森矩阵
+	const mat hessian = jacobian.t() * jacobian;
+
 	// 伪逆矩阵
-	pseudo = inv_sympd(jacobian.t() * jacobian) * jacobian.t();
+	pseudo = inv_sympd(hessian) * jacobian.t();
 
 	return true;
 }
-
-
 
 
 
@@ -628,7 +644,7 @@ bool FifthOrderPseudoInverseMatrix(const mat& gx, const mat& gy, const mat& x, c
 
 DICOutput* RigsterFullFieldDisplacement(const arma::mat& refer_image, const arma::mat& deform_image, const DICParameters& dic_parameters)
 {
-	// 划分网格
+	// 网格点
 	mat grid_x;
 	mat grid_y;
 	dic_parameters.grid(grid_x, grid_y);
@@ -637,33 +653,34 @@ DICOutput* RigsterFullFieldDisplacement(const arma::mat& refer_image, const arma
 	DICOutput* dic_output = new DICOutput(grid_x, grid_y, ParameterTotalNumber(dic_parameters.shape_function_order()));
 
 	// 估计初值
-	mat u;
-	mat v;
-	EstimateInitialDisplacement(refer_image, deform_image, grid_x, grid_y, u, v);
+	EstimateInitialDisplacement(refer_image, deform_image, dic_parameters, dic_output);
 
 	// 相关计算
-	RegisterSubpixelDisplacement(refer_image, deform_image, grid_x, grid_y, dic_parameters, u, v, dic_output);
+	RegisterSubpixelDisplacement(refer_image, deform_image, dic_parameters, dic_output);
 
 
 	return dic_output;
-
 }
 
 
 
-bool EstimateInitialDisplacement(const mat& refer_image, const mat& deform_image, const mat& x, const mat& y, mat& u, mat& v)
+bool EstimateInitialDisplacement(const mat& refer_image, const mat& deform_image, const DICParameters& dic_parameters, DICOutput* dic_output)
 {
+	// 网格点
+	const mat x = dic_output->x();
+	const mat y = dic_output->y();
+
 	// 初始化
-	u.zeros(x.n_rows, x.n_cols);
-	v.zeros(x.n_rows, x.n_cols);
+	mat u(x.n_rows, x.n_cols, fill::zeros);
+	mat v(x.n_rows, x.n_cols, fill::zeros);
 
 	// 赋初值
 	bool is_harmonic = true;
 
 	if (is_harmonic)
 	{
-		double a = 5;
-		double T = 20;
+		double a = 1;
+		double T = 100;
 		double b = 0;
 
 		u = a * sin(2 * datum::pi * x / T + b);
@@ -678,78 +695,40 @@ bool EstimateInitialDisplacement(const mat& refer_image, const mat& deform_image
 		u = a * exp(-t % t);
 	}
 
+
+	dic_output->set_u(u);
+
 	return true;
 }
 
 
 
-bool RegisterSubpixelDisplacement(const mat& refer_image, const mat& deform_image, const mat& x, const mat& y, const DICParameters& dic_parameters, const mat& u, const mat& v, DICOutput* dic_output)
+bool RegisterSubpixelDisplacement(const mat& refer_image, const mat& deform_image, const DICParameters& dic_parameters, DICOutput* dic_output)
 {
-	/**************************************************************************************************************/
-	/*                                             预处理                                                         */
-	/**************************************************************************************************************/
-
-	// 子区尺寸
-	const int subset_size = dic_parameters.subset_size();
-	const int half_subset_size = (subset_size - 1) / 2;
+	// 网格点
+	const mat x = dic_output->x();
+	const mat y = dic_output->y();
 
 	// "子区点"相对于"子区中心"的坐标
-	mat delta_x = zeros(subset_size, subset_size);
-	mat delta_y = zeros(subset_size, subset_size);
-	for (int dx = -half_subset_size; dx <= half_subset_size; ++dx)
-	{
-		const int c = dx + half_subset_size;
-		for (int dy = -half_subset_size; dy <= half_subset_size; ++dy)
-		{
-			const int r = dy + half_subset_size;
-			delta_x(r, c) = dx;
-			delta_y(r, c) = dy;
-		}
-
-	}
-
+	mat delta_x, delta_y;
+	SubsetPointsRelativeCoordinate(dic_parameters.subset_size(), delta_x, delta_y);
 
 	// 变形图插值系数
-	Interpolator* deform_image_interpolator;
-
-	if (dic_parameters.bspline_interpolation_order() == 3)
-		deform_image_interpolator = new BicubicMOMSInterpolator(deform_image);
-	else if (dic_parameters.bspline_interpolation_order() == 7)
-		deform_image_interpolator = new BisepticBSplineInterpolator(deform_image); 
-	else
-		deform_image_interpolator = new BiquinticBSplineInterpolatror(deform_image);
-
-
-	/**************************************************************************************************************/
-	/*                                      高斯牛顿法亚像素迭代                                                    */
-	/**************************************************************************************************************/
-
+	Interpolator* deform_image_interpolator = ConstructInterpolator(deform_image, dic_parameters.bspline_interpolation_order());
 	
 	for (int r = 0; r < x.n_rows; ++r)
 	{
 		for (int c = 0; c < x.n_cols; ++c)
 		{
-			// 确定子区
-			const int subset_center_x = x(r, c);
-			const int subset_center_y = y(r, c);
-
-			const int subset_x_min = subset_center_x - half_subset_size;
-			const int subset_x_max = subset_center_x + half_subset_size;
-			const int subset_y_min = subset_center_y - half_subset_size;
-			const int subset_y_max = subset_center_y + half_subset_size;
-
-			const mat refer_subset_intensities = refer_image.submat(subset_y_min, subset_y_max, subset_x_min, subset_x_max);
-
-			// 迭代初值
-			const int parameter_total_number = ParameterTotalNumber(dic_parameters.shape_function_order());
-			vec warp_function = zeros<vec>(parameter_total_number);
-
-			warp_function(0) = u(r, c);
-			warp_function(1) = v(r, c);
+			// 参考子区灰度
+			const mat refer_subset_intensities = SubsetIntensities(refer_image, x(r, c), y(r,c), dic_parameters.half_subset_size());
 
 			// 将参考子区灰度归一化
 			vec normalized_refer_subset_intensities;
 			NormalizeVectorize(refer_subset_intensities, normalized_refer_subset_intensities);
+
+			// 迭代初值
+			vec warp_function(dic_output->warp_function(r, c));
 
 			// 迭代次数
 			uword iter = 0;
@@ -762,25 +741,25 @@ bool RegisterSubpixelDisplacement(const mat& refer_image, const mat& deform_imag
 			vec normalized_deform_subset_intensities;	// 归一化的变形子区灰度
 
 			// 迭代
-			vec dp = ones<vec>(parameter_total_number);	// 迭代增量
-			while (!isConverge(dp) && iter <= dic_parameters.max_iteration_times())
+			vec dp = ones<vec>(warp_function.n_elem);	// 迭代增量
+			while (!isConverge(dp,dic_parameters.error_threshold()) && iter <= dic_parameters.max_iteration_times())
 			{
 				// 确定变形子区点的"图像坐标"
-				ShapeFunction(subset_center_x, subset_center_y, delta_x, delta_y, warp_function, dic_parameters.shape_function_order(), deform_x, deform_y);
+				ShapeFunction(x(r, c), y(r, c), delta_x, delta_y, warp_function, dic_parameters.shape_function_order(), deform_x, deform_y);
 
 				// 变形子区点的灰度
 				deform_subset_intensities = deform_image_interpolator->Values(deform_x, deform_y);
 				const double gg = NormalizeVectorize(deform_subset_intensities, normalized_deform_subset_intensities);
+
+				// 归一化的"参考子区"和"变形子区"的灰度差
+				const vec diff = normalized_refer_subset_intensities - normalized_deform_subset_intensities;
 
 				// 变形子区点的灰度梯度
 				deform_subset_gradient_x = deform_image_interpolator->GradientsX(deform_x, deform_y);
 				deform_subset_gradient_y = deform_image_interpolator->GradientsY(deform_x, deform_y);
 
 				// 伪逆矩阵
-				PseudoInverseMatrix(deform_subset_gradient_x, deform_subset_gradient_y, delta_x, delta_x, dic_parameters.shape_function_order(), pseudo);
-
-				// 归一化的"参考子区"和"变形子区"的灰度差
-				const vec diff = normalized_refer_subset_intensities - normalized_deform_subset_intensities;
+				PseudoInverseMatrix(deform_subset_gradient_x, deform_subset_gradient_y, delta_x, delta_y, dic_parameters.shape_function_order(), pseudo);
 
 				// 迭代增量
 				dp = gg * pseudo * diff;
@@ -791,7 +770,7 @@ bool RegisterSubpixelDisplacement(const mat& refer_image, const mat& deform_imag
 			}
 
 			// 最终的相关系数
-			ShapeFunction(subset_center_x, subset_center_y, delta_x, delta_y, warp_function, dic_parameters.shape_function_order(), deform_x, deform_y);
+			ShapeFunction(x(r,c), y(r,c), delta_x, delta_y, warp_function, dic_parameters.shape_function_order(), deform_x, deform_y);
 			deform_subset_intensities = deform_image_interpolator->Values(deform_x, deform_y);
 
 			const double zncc = ZNCC(refer_subset_intensities, deform_subset_intensities);
@@ -801,9 +780,15 @@ bool RegisterSubpixelDisplacement(const mat& refer_image, const mat& deform_imag
 			dic_output->set_iteration_times(r, c, iter);
 			dic_output->set_zncc(r, c, zncc);
 
+			if (zncc >= dic_parameters.zncc_threshold() && iter != dic_parameters.max_iteration_times())
+				dic_output->set_valid_sign(r, c, DICOutput::POI_SUCCEED);
+			else
+				dic_output->set_valid_sign(r, c, DICOutput::POI_FAIL);
+
 		}
 	}
 
+	delete deform_image_interpolator;
 
 	return true;
 
@@ -811,16 +796,68 @@ bool RegisterSubpixelDisplacement(const mat& refer_image, const mat& deform_imag
 
 
 
-bool isConverge(const vec& dp)
+Interpolator* ConstructInterpolator(const mat& image, const int& n)
+{
+	Interpolator* interpolator;
+
+	if (n == 3)
+	{
+		interpolator = new BicubicMOMSInterpolator(image);
+	}
+	else if (n == 5)
+	{
+		interpolator = new BiquinticBSplineInterpolatror(image);
+	}
+	else if (n == 7)
+	{
+		interpolator = new BisepticBSplineInterpolator(image);
+	} 
+	else
+	{
+		interpolator = new BiquinticBSplineInterpolatror(image);
+	}
+
+	return interpolator;
+}
+
+
+
+void SubsetPointsRelativeCoordinate(const int& m, mat& dx, mat& dy)
+{
+	dx.zeros(m, m);
+	dy.zeros(m, m);
+
+	const int n = (m - 1) / 2;
+	for (int r = 0; r < m; ++r)
+	{
+		for (int c = 0; c < m; ++c)
+		{
+			dx(r, c) = c - n;
+			dy(r, c) = r - n;
+		}
+	}
+
+}
+
+
+
+mat SubsetIntensities(const mat& image, const int& x0, const int& y0, const int& m) 
+{ 
+	return image(span(y0 - m, y0 + m), span(x0 - m, x0 + m)); 
+}
+
+
+
+bool isConverge(const vec& dp, const double& threshold)
 {
 	// 迭代增量
 	const double dx = dp(0);
 	const double dy = dp(1);
-	const double dr2 = dx * dx + dy * dy;
+	const double dr = abs(dx) + abs(dy);
 
 	// 收敛判据
 	bool is_converge = false;
-	if (dr2 < 1e-6)
+	if (dr < threshold)
 		is_converge = true;
 
 	return is_converge;

@@ -91,36 +91,26 @@ op_sum::apply_noalias_unwrap(Mat<typename T1::elem_type>& out, const Proxy<T1>& 
   const uword X_n_rows = X.n_rows;
   const uword X_n_cols = X.n_cols;
   
-  const uword out_n_rows = (dim == 0) ? uword(1) : X_n_rows;
-  const uword out_n_cols = (dim == 0) ? X_n_cols : uword(1);
-  
-  out.set_size(out_n_rows, out_n_cols);
-  
-  if(X.n_elem == 0)  { out.zeros(); return; }
-  
-  const eT* X_colptr =   X.memptr();
-        eT* out_mem  = out.memptr();
-  
   if(dim == 0)
     {
+    out.set_size(1, X_n_cols);
+    
+    eT* out_mem = out.memptr();
+    
     for(uword col=0; col < X_n_cols; ++col)
       {
-      out_mem[col] = arrayops::accumulate( X_colptr, X_n_rows );
-      
-      X_colptr += X_n_rows;
+      out_mem[col] = arrayops::accumulate( X.colptr(col), X_n_rows );
       }
     }
   else
     {
-    arrayops::copy(out_mem, X_colptr, X_n_rows);
+    out.zeros(X_n_rows, 1);
     
-    X_colptr += X_n_rows;
+    eT* out_mem = out.memptr();
     
-    for(uword col=1; col < X_n_cols; ++col)
+    for(uword col=0; col < X_n_cols; ++col)
       {
-      arrayops::inplace_plus( out_mem, X_colptr, X_n_rows );
-      
-      X_colptr += X_n_rows;
+      arrayops::inplace_plus( out_mem, X.colptr(col), X_n_rows );
       }
     }
   }
@@ -140,93 +130,42 @@ op_sum::apply_noalias_proxy(Mat<typename T1::elem_type>& out, const Proxy<T1>& P
   const uword P_n_rows = P.get_n_rows();
   const uword P_n_cols = P.get_n_cols();
   
-  const uword out_n_rows = (dim == 0) ? uword(1) : P_n_rows;
-  const uword out_n_cols = (dim == 0) ? P_n_cols : uword(1);
-  
-  out.set_size(out_n_rows, out_n_cols);
-  
-  if(P.get_n_elem() == 0)  { out.zeros(); return; }
-  
-  eT* out_mem = out.memptr();
-  
-  if(Proxy<T1>::use_at == false)
+  if(dim == 0)
     {
-    if(dim == 0)
+    out.set_size(1, P_n_cols);
+    
+    eT* out_mem = out.memptr();
+    
+    for(uword col=0; col < P_n_cols; ++col)
       {
-      uword count = 0;
+      eT val1 = eT(0);
+      eT val2 = eT(0);
       
-      for(uword col=0; col < P_n_cols; ++col)
+      uword i,j;
+      for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
         {
-        eT val1 = eT(0);
-        eT val2 = eT(0);
-        
-        uword j;
-        for(j=1; j < P_n_rows; j+=2)
-          {
-          val1 += P[count]; ++count;
-          val2 += P[count]; ++count;
-          }
-        
-        if((j-1) < P_n_rows)
-          {
-          val1 += P[count]; ++count;
-          }
-        
-        out_mem[col] = (val1 + val2);
-        }
-      }
-    else
-      {
-      uword count = 0;
-      
-      for(uword row=0; row < P_n_rows; ++row)
-        {
-        out_mem[row] = P[count]; ++count;
+        val1 += P.at(i,col);
+        val2 += P.at(j,col);
         }
       
-      for(uword col=1; col < P_n_cols; ++col)
-      for(uword row=0; row < P_n_rows; ++row)
+      if(i < P_n_rows)
         {
-        out_mem[row] += P[count]; ++count;
+        val1 += P.at(i,col);
         }
+      
+      out_mem[col] = (val1 + val2);
       }
     }
   else
     {
-    if(dim == 0)
+    out.zeros(P_n_rows, 1);
+    
+    eT* out_mem = out.memptr();
+    
+    for(uword col=0; col < P_n_cols; ++col)
+    for(uword row=0; row < P_n_rows; ++row)
       {
-      for(uword col=0; col < P_n_cols; ++col)
-        {
-        eT val1 = eT(0);
-        eT val2 = eT(0);
-        
-        uword i,j;
-        for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
-          {
-          val1 += P.at(i,col);
-          val2 += P.at(j,col);
-          }
-        
-        if(i < P_n_rows)
-          {
-          val1 += P.at(i,col);
-          }
-        
-        out_mem[col] = (val1 + val2);
-        }
-      }
-    else
-      {
-      for(uword row=0; row < P_n_rows; ++row)
-        {
-        out_mem[row] = P.at(row,0);
-        }
-      
-      for(uword col=1; col < P_n_cols; ++col)
-      for(uword row=0; row < P_n_rows; ++row)
-        {
-        out_mem[row] += P.at(row,col);
-        }
+      out_mem[row] += P.at(row,col);
       }
     }
   }

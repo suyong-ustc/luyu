@@ -23,7 +23,7 @@ DICParameters::DICParameters()
 
 	bspline_interpolation_order_ = 5;
 
-	shape_function_order_ = 1;
+	shape_function_order_ = 0;
 }
 
 
